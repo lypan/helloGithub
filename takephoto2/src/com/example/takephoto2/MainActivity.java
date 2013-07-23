@@ -23,10 +23,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -43,6 +47,8 @@ public class MainActivity extends Activity {
 	private TextView parseFileUrlTextView;
 	private LinearLayout linearLayout;
 	private LinearLayout.LayoutParams imageMargin;
+
+	private ImageView childView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -204,10 +210,29 @@ public class MainActivity extends Activity {
 
 			saveToExternalStorage(image);
 			saveToParseServer(image);
-			ImageView newImageView = new ImageView(
-					MainActivity.this);
+			ImageView newImageView = new ImageView(MainActivity.this);
 			newImageView.setImageBitmap(image);
-			//linearLayout.addView(newImageView, 0, imageMargin);
+			linearLayout.addView(newImageView, 0, imageMargin);
+			int childcount = linearLayout.getChildCount();
+			for (int i = 0; i < childcount; i++) {
+				childView = (ImageView) linearLayout.getChildAt(i);
+				childView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent();
+						intent.setClass(MainActivity.this,	ImageActivity.class);
+						Drawable drawable = childView.getDrawable();
+						BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
+						Bitmap bitmap = bitmapDrawable.getBitmap();
+						ByteArrayOutputStream stream = new ByteArrayOutputStream();
+						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+						byte[] imageInByte = stream.toByteArray();
+						intent.putExtra("imageByteArray", imageInByte);
+						startActivity(intent);
+					}
+				});
+
+			}
 		} else {
 			return;
 		}
