@@ -216,25 +216,31 @@ public class MainActivity extends Activity {
 			int childcount = linearLayout.getChildCount();
 			for (int i = 0; i < childcount; i++) {
 				childView = (ImageView) linearLayout.getChildAt(i);
-				childView.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent();
-						intent.setClass(MainActivity.this,	ImageActivity.class);
-						Drawable drawable = childView.getDrawable();
-						BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
-						Bitmap bitmap = bitmapDrawable.getBitmap();
-						ByteArrayOutputStream stream = new ByteArrayOutputStream();
-						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-						byte[] imageInByte = stream.toByteArray();
-						intent.putExtra("imageByteArray", imageInByte);
-						startActivity(intent);
-					}
-				});
-
+				childView.setOnClickListener(new ImageClickListener(childView));
 			}
 		} else {
 			return;
+		}
+	}
+	
+	class ImageClickListener implements OnClickListener {
+		private Drawable drawable;
+		
+		public ImageClickListener(ImageView view) {
+			drawable = view.getDrawable();
+		}
+		
+		@Override
+		public void onClick(View v) {
+			Intent intent = new Intent();
+			intent.setClass(MainActivity.this,	ImageActivity.class);
+			BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
+			Bitmap bitmap = bitmapDrawable.getBitmap();
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+			byte[] imageInByte = stream.toByteArray();
+			intent.putExtra("imageByteArray", imageInByte);
+			startActivity(intent);			
 		}
 	}
 }
