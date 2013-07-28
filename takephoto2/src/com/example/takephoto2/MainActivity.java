@@ -70,7 +70,6 @@ public class MainActivity extends Activity {
 		imageMargin.bottomMargin = 15;
 
 		listImage();
-
 	}
 
 	public void listImage() {
@@ -96,6 +95,12 @@ public class MainActivity extends Activity {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+				}
+				int childcount = linearLayout.getChildCount();
+				for (int i = 0; i < childcount; i++) {
+					childView = (ImageView) linearLayout.getChildAt(i);
+					childView.setOnClickListener(new ImageClickListener(
+							childView));
 				}
 			}
 		});
@@ -213,34 +218,36 @@ public class MainActivity extends Activity {
 			ImageView newImageView = new ImageView(MainActivity.this);
 			newImageView.setImageBitmap(image);
 			linearLayout.addView(newImageView, 0, imageMargin);
-			int childcount = linearLayout.getChildCount();
-			for (int i = 0; i < childcount; i++) {
-				childView = (ImageView) linearLayout.getChildAt(i);
-				childView.setOnClickListener(new ImageClickListener(childView));
-			}
+			/*
+			 * int childcount = linearLayout.getChildCount(); for (int i = 0; i
+			 * < childcount; i++) {
+			 */
+			childView = (ImageView) linearLayout.getChildAt(0);
+			childView.setOnClickListener(new ImageClickListener(childView));
+			// }
 		} else {
 			return;
 		}
 	}
-	
+
 	class ImageClickListener implements OnClickListener {
 		private Drawable drawable;
-		
+
 		public ImageClickListener(ImageView view) {
 			drawable = view.getDrawable();
 		}
-		
+
 		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent();
-			intent.setClass(MainActivity.this,	ImageActivity.class);
+			intent.setClass(MainActivity.this, ImageActivity.class);
 			BitmapDrawable bitmapDrawable = ((BitmapDrawable) drawable);
 			Bitmap bitmap = bitmapDrawable.getBitmap();
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 			byte[] imageInByte = stream.toByteArray();
 			intent.putExtra("imageByteArray", imageInByte);
-			startActivity(intent);			
+			startActivity(intent);
 		}
 	}
 }
